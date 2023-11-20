@@ -49,9 +49,9 @@ public class DatabaseStruct{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        /*
         //create a student class table to establish many-to-many relationship
-        try (Connection connection = DriverManager.getConnection(url, user, password);
+        //try (Connection connection = DriverManager.getConnection(url, user, password);
              Statement statement = connection.createStatement()) {
             String createStudentCourseTableSQL = "CREATE TABLE IF NOT EXISTS studentcourses ("
                     + "StudentID INT,"
@@ -64,7 +64,7 @@ public class DatabaseStruct{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        */
 
 
     }
