@@ -1,7 +1,11 @@
+
+package com.Uni.Model.Database;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.*;
 
 
 public class DatabaseStruct{
@@ -18,8 +22,27 @@ public class DatabaseStruct{
 
                 Connection connection = DriverManager.getConnection(url, user, password);
                 System.out.println("Connected to database");
-                createStudentTable(connection);
-                createClassTable(connection);
+
+                //create student table
+                //createStudentTable(connection);
+
+                //create class table
+                //createClassTable(connection);
+
+                //create a test student
+                //insertTestData(connection);
+
+                String u = "test@example.com";
+                String p = "testpassword";
+
+                //check if the student is in database
+                if(checkCredentials(connection,u,p)) {
+                    System.out.println("found in database!");
+                } else{
+                    System.out.println("not found in database");
+                }
+
+
 
             } catch(SQLException e){
                 e.printStackTrace();
@@ -74,6 +97,34 @@ public class DatabaseStruct{
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    //method to create a test student
+    public static void insertTestData(Connection connection) {
+        try (Statement statement = connection.createStatement()) {
+            String insertTestDataSQL = "INSERT INTO students (email, password) VALUES "
+                    + "('test@example.com', 'testpassword')";
+            statement.executeUpdate(insertTestDataSQL);
+            System.out.println("Test data inserted into 'students' table.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Check if given email and password match any entries in the "students" table
+    public static boolean checkCredentials(Connection connection, String email, String password) {
+        try (Statement statement = connection.createStatement()) {
+            String checkCredentialsSQL = "SELECT * FROM students WHERE email = '" + email + "' AND password = '" + password + "'";
+            ResultSet resultSet = statement.executeQuery(checkCredentialsSQL);
+
+            // If the result set has any rows, the credentials are valid
+            return resultSet.next();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // An error occurred, credentials cannot be verified
         }
     }
 
