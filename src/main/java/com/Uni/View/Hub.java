@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 public class Hub extends JFrame implements ActionListener {
 
     Course course[] = new Course[10]; //set equal to database student
-    Student student; //set equal to database student
+    Student student;                  //set equal to database student
 
     JFrame frame = new  JFrame("HUB");
     JButton exitB, Classes[];
