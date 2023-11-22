@@ -17,6 +17,7 @@ public class CourseView extends JFrame implements ActionListener
     private JLabel Major;
     private JTextField MajorTF;
     private JButton FinishB;
+    private JButton addCourse;
     private List<Course> courses;
     private Student student;
 
@@ -27,6 +28,11 @@ public class CourseView extends JFrame implements ActionListener
         setLayout(null);
 
         //Basic courses for the course box
+        CourseBox= new JComboBox<String>();
+        CourseBox.setBounds(100, 110, 150, 30);
+
+        CourseBox.setName("select a course");
+
         CourseBox.addItem("Math");
         CourseBox.addItem("Science");
         CourseBox.addItem("History");
@@ -34,7 +40,46 @@ public class CourseView extends JFrame implements ActionListener
         CourseBox.addItem("Engineering");
         CourseBox.addItem("Computer Science");
         CourseBox.addItem("Software Engineering");
+        add(CourseBox);
 
+        //course levels
+        LevelBox = new JComboBox<Integer>();
+        LevelBox.setBounds(300, 110, 100, 30);
+        LevelBox.setName("select a level");
+
+        LevelBox.addItem(100);
+        LevelBox.addItem(200);
+        LevelBox.addItem(300);
+        LevelBox.addItem(400);
+        add(LevelBox);
+
+        //intro text
+        Course_page = new JLabel("Add your courses");
+        Course_page.setBounds(200, 50, 100, 20);
+        add(Course_page);
+
+        //finish button
+        FinishB = new JButton("Finish");
+        FinishB.setBounds(300, 150, 100, 30);
+        add(FinishB);
+
+        //add course button
+        addCourse = new JButton("Add Course");
+        addCourse.setBounds(100,150, 100, 30);
+        add(addCourse);
+
+        //enter major label and button
+        Major = new JLabel("Enter Major:");
+        Major.setBounds(100, 75, 100, 30);
+        add(Major);
+
+        //enter major label and button
+        MajorTF = new JTextField("Major");
+        MajorTF.setBounds(300, 75, 100, 30);
+        add(MajorTF);
+
+
+        setVisible(true);
 
 
 
@@ -46,6 +91,16 @@ public class CourseView extends JFrame implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        if(e.getSource()==FinishB)
+        {
+
+            //this.student.setMajor(MajorTF.getText());
+            //this.student.addCourse(CourseBox.getSelectedItem(), LevelBox.getSelectedItem() );
+
+
+            //add course to student object
+        }
 
     }
 }

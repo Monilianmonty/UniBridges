@@ -20,12 +20,12 @@ public class Controller_J {
 
     public CourseView Cview;
 
-    public Controller_J(Login_View v1, CreateUser_View v2/*, Hub v2, CourseView v3*/) {
+    public Controller_J(CourseView v3) {
 
-        Lview = v1;
-        Uview = v2;
+        //Lview = v1;
+        //Uview = v2;
         //Hview = v2;
-        //Cview = v3;
+        Cview = v3;
     }
 
 
