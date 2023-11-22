@@ -1,7 +1,10 @@
 package com.Uni.View;
 
 import com.Uni.Model.Database.DatabaseStruct;
+import org.hibernate.dialect.Database;
+
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -100,18 +103,41 @@ public class Login_View extends JFrame implements ActionListener {
 
             String email = emailField.getText();
             String password = new String(passwordField.getPassword());
+            Connection connection = null;
+
+            //
+
+
+            try {
+                //connect to data
+                String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
+                String user = "admin";
+                String pass = "staples123";
+                connection = DriverManager.getConnection(url, user, pass);
+                System.out.println("Connected to database");
+
+
+                //insert the student data
+                com.Uni.Model.Database.DatabaseStruct.insertStudentData(connection, email, password);
+
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+
             JOptionPane.showMessageDialog(this, "Account Created!\nEmail: " + email + "\nPassword: " + password);
         } else if (e.getSource() == loginButton) {
             // add sql check here
             String email = emailField.getText();
             String password = new String(passwordField.getPassword());
 
+            //connection info
             String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
             String user = "admin";
             String pass = "staples123";
 
 
             Connection connection = null;
+
             try {
                 //connect to data
                 connection = DriverManager.getConnection(url, user, pass);

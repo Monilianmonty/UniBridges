@@ -9,8 +9,16 @@ import java.sql.*;
 
 
 public class DatabaseStruct{
+    String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
+    String user = "admin";
+    String password = "staples123";
+    public DatabaseStruct(String url,String user,String password){
 
+        this.url = url;
+        this.user = user;
+        this.password = password;
 
+    }
 
     public static void main(String[] args) {
         String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
@@ -30,7 +38,7 @@ public class DatabaseStruct{
                 //createClassTable(connection);
 
                 //create a test student
-                //insertTestData(connection);
+                //insertStudentData(connection);
 
                 String u = "test@example.com";
                 String p = "testpassword";
@@ -101,12 +109,18 @@ public class DatabaseStruct{
     }
 
     //method to create a test student
-    public static void insertTestData(Connection connection) {
-        try (Statement statement = connection.createStatement()) {
-            String insertTestDataSQL = "INSERT INTO students (email, password) VALUES "
-                    + "('test@example.com', 'testpassword')";
-            statement.executeUpdate(insertTestDataSQL);
-            System.out.println("Test data inserted into 'students' table.");
+    public static void insertStudentData(Connection connection, String email, String password) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO students (email, password) VALUES (?, ?)")) {
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, password);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Data inserted into 'students' table.");
+            } else {
+                System.out.println("Failed to insert data into 'students' table.");
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
