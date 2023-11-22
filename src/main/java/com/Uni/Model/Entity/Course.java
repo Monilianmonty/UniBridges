@@ -11,7 +11,10 @@ public class Course{
     private String courseName;
     private int level;
 
-    public Course(){
+
+    public Course(String C, int lvl){
+        this.level = lvl;
+        this.courseName = C;
 
     }
 

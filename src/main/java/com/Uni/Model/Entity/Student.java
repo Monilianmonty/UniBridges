@@ -17,6 +17,7 @@ public class Student{
 
 
     public void addCourse(Course course){
+        this.courseList.add(course);
 
     }
 
