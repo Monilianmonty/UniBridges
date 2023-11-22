@@ -2,10 +2,7 @@ package com.Uni;
 
 import com.Uni.Controller.Controller;
 import com.Uni.Controller.Controller_J;
-import com.Uni.View.CourseView;
-import com.Uni.View.CreateUser_View;
-import com.Uni.View.Hub;
-import com.Uni.View.Login_View;
+import com.Uni.View.*;
 
 public class Main {
 
@@ -13,10 +10,10 @@ public class Main {
         Login_View logView = new Login_View();
         CreateUser_View userView = new CreateUser_View();
         //Hub hubView = new Hub();
-        //CourseView courseView = new CourseView();
+        CourseView_M courseView = new CourseView_M();
 
         //Monty's controller
-        Controller Controller = new Controller(logView, userView);
+        Controller Controller = new Controller(logView, userView, courseView);
 
         //Joe's controller
         //Controller_J Controller = new Controller_J(logView, userView);

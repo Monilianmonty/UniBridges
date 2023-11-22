@@ -80,33 +80,10 @@ public class Login_View extends JFrame implements ActionListener {
     // Handle button clicks
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getSource() == createAccountButton) {
-            if (createAccountButton.getText().equals("Create Account")) {
-                // Transition to account creation mode
-                createAccountButton.setText("Back to Login");
-                createAccountButton.setBounds(50, 150, 140, 30);
-                createAccountConfirmButton.setVisible(true);
-                loginButton.setVisible(false);
-
-
-            } else {
-                // Transition back to login mode
-                createAccountButton.setText("Create Account");
-                createAccountButton.setBounds(210, 150, 140, 30);
-                createAccountConfirmButton.setVisible(false);
-                loginButton.setVisible(true);
-
-
-            }
-        }
-
-
 
     }
 
-    public static void main(String[] args) {
-        new Login_View(); // Creates an instance of Login
-    }
+
 
 
     public JLabel getLoginLabel() {

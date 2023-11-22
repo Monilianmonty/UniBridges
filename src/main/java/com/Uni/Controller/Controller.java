@@ -1,10 +1,7 @@
 package com.Uni.Controller;
 
 import com.Uni.Model.Database.DatabaseStruct;
-import com.Uni.View.CourseView;
-import com.Uni.View.CreateUser_View;
-import com.Uni.View.Hub;
-import com.Uni.View.Login_View;
+import com.Uni.View.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,14 +16,14 @@ public class Controller extends Component {
     public CreateUser_View Uview;
     public Hub Hview;
 
-    public CourseView Cview;
+    public CourseView_M Cview;
 
-    public Controller(Login_View v1, CreateUser_View v2/*, Hub v2, CourseView v3*/) {
+    public Controller(Login_View v1, CreateUser_View v2, CourseView_M v3/*, Hub v2*/) {
 
         Lview = v1;
         Uview = v2;
        //Hview = v2;
-        //Cview = v3;
+        Cview = v3;
     }
 
 
@@ -35,6 +32,7 @@ public class Controller extends Component {
         Lview.getLoginButton().addActionListener(e -> login());
         Lview.getCreateAccountButton().addActionListener(e -> createUserView());
         Uview.getCreateAccountButtonU().addActionListener(e -> createAccount());
+
 
     }
 
@@ -76,6 +74,10 @@ public class Controller extends Component {
             } else{
                 System.out.println("Not found in database");
             }
+
+
+            //send the user to the hub with all the respective courses that they are taking
+
 
 
         } catch (SQLException ex) {
@@ -129,7 +131,7 @@ public class Controller extends Component {
                 validEntry = false;
 
                 //if the database already has this specific student
-            } else if(DatabaseStruct.checkCredentials(connection,email,password)){
+            } else if(DatabaseStruct.checkIfStudentExists(connection,email)){
 
                 JOptionPane.showMessageDialog(null, "Credentials already exist!");
                 validEntry = false;
@@ -137,15 +139,17 @@ public class Controller extends Component {
 
 
 
-            //if its a valid entry
+            //if its a valid entry insert into database and move them to add the courses they are taking
             if(validEntry) {
 
 
 
                 //insert the student data
-
-
                 com.Uni.Model.Database.DatabaseStruct.insertStudentData(connection, email, password);
+
+                //send them to the courseView
+
+
 
             }
 
