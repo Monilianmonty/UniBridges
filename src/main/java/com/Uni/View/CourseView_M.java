@@ -1,5 +1,6 @@
 package com.Uni.View;
 
+import com.Uni.Model.Database.DatabaseStruct;
 import com.Uni.Model.Entity.Course;
 import com.Uni.Model.Entity.Student;
 
@@ -8,8 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class CourseView extends JFrame implements ActionListener
-{
+
+public class CourseView_M  extends JFrame implements ActionListener {
+
     private JFrame frame = new JFrame("Course View");
     private JComboBox<String> CourseBox;
     private JComboBox<Integer> LevelBox;
@@ -21,7 +23,7 @@ public class CourseView extends JFrame implements ActionListener
     private List<Course> courses;
     private Student student;
 
-    public CourseView(){
+    public CourseView_M(){
 
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,7 +34,7 @@ public class CourseView extends JFrame implements ActionListener
         CourseBox.setBounds(100, 110, 150, 30);
 
         CourseBox.setName("select a course");
-
+        /*
         CourseBox.addItem("Math");
         CourseBox.addItem("Science");
         CourseBox.addItem("History");
@@ -40,6 +42,10 @@ public class CourseView extends JFrame implements ActionListener
         CourseBox.addItem("Engineering");
         CourseBox.addItem("Computer Science");
         CourseBox.addItem("Software Engineering");
+
+         */
+
+
         add(CourseBox);
 
         //course levels
@@ -78,6 +84,7 @@ public class CourseView extends JFrame implements ActionListener
         MajorTF.setBounds(300, 75, 100, 30);
         add(MajorTF);
 
+        populateComboBoxes();
 
         setVisible(true);
 
@@ -95,6 +102,24 @@ public class CourseView extends JFrame implements ActionListener
     public void setCourses(List<Course> courses) {
         this.courses = courses;
         // You can perform additional actions if needed after setting the courses
+    }
+
+    private void populateComboBoxes() {
+        // Assuming you have a method in your DatabaseStruct class to retrieve courses
+        // Replace 'getCoursesFromDatabase()' with the appropriate method in your class
+
+        DatabaseStruct databaseStruct = new DatabaseStruct("jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges", "admin", "staples123");
+        List<Course> courses = databaseStruct.getAllCourses();
+
+        // Clear existing items
+        CourseBox.removeAllItems();
+        LevelBox.removeAllItems();
+
+        // Populate combo boxes with course names and levels
+        for (Course course : courses) {
+            CourseBox.addItem(course.getCourseName());
+            LevelBox.addItem(course.getLevel());
+        }
     }
 
 
