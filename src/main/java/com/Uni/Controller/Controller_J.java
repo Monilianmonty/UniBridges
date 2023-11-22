@@ -7,12 +7,11 @@ import com.Uni.View.Hub;
 import com.Uni.View.Login_View;
 
 import javax.swing.*;
-import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class Controller extends Component {
+public class Controller_J {
 
     public Login_View Lview;
 
@@ -21,11 +20,11 @@ public class Controller extends Component {
 
     public CourseView Cview;
 
-    public Controller(Login_View v1, CreateUser_View v2/*, Hub v2, CourseView v3*/) {
+    public Controller_J(Login_View v1, CreateUser_View v2/*, Hub v2, CourseView v3*/) {
 
         Lview = v1;
         Uview = v2;
-       //Hview = v2;
+        //Hview = v2;
         //Cview = v3;
     }
 
