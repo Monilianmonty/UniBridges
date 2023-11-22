@@ -58,7 +58,7 @@ public class Login_View extends JFrame implements ActionListener {
         // Creates "Login" button
         loginButton = new JButton("Login");
         loginButton.setBounds(100, 150, 100, 30);
-        loginButton.addActionListener(this);
+        //loginButton.addActionListener(this);
         add(loginButton);
 
         // Creates "Create Account" button
@@ -98,65 +98,6 @@ public class Login_View extends JFrame implements ActionListener {
 
 
             }
-        } else if (e.getSource() == createAccountConfirmButton) {
-            // Account creation
-
-            String email = emailField.getText();
-            String password = new String(passwordField.getPassword());
-            Connection connection = null;
-
-            //
-
-
-            try {
-                //connect to data
-                String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
-                String user = "admin";
-                String pass = "staples123";
-                connection = DriverManager.getConnection(url, user, pass);
-                System.out.println("Connected to database");
-
-
-                //insert the student data
-                com.Uni.Model.Database.DatabaseStruct.insertStudentData(connection, email, password);
-
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-
-            JOptionPane.showMessageDialog(this, "Account Created!\nEmail: " + email + "\nPassword: " + password);
-        } else if (e.getSource() == loginButton) {
-            // add sql check here
-            String email = emailField.getText();
-            String password = new String(passwordField.getPassword());
-
-            //connection info
-            String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
-            String user = "admin";
-            String pass = "staples123";
-
-
-            Connection connection = null;
-
-            try {
-                //connect to data
-                connection = DriverManager.getConnection(url, user, pass);
-                System.out.println("Connected to database");
-                if(com.Uni.Model.Database.DatabaseStruct.checkCredentials(connection,email,password)){
-                    System.out.println("Found in the database!");
-                } else{
-                    System.out.println("Not found in database");
-                }
-
-
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-
-
-
-            // add sql check here
-            JOptionPane.showMessageDialog(this, "Email: " + email + "\nPassword: " + password);
         }
 
 
@@ -168,6 +109,67 @@ public class Login_View extends JFrame implements ActionListener {
     }
 
 
+    public JLabel getLoginLabel() {
+        return loginLabel;
+    }
 
+    public void setLoginLabel(JLabel loginLabel) {
+        this.loginLabel = loginLabel;
+    }
 
+    public JLabel getPasswordLabel() {
+        return passwordLabel;
+    }
+
+    public void setPasswordLabel(JLabel passwordLabel) {
+        this.passwordLabel = passwordLabel;
+    }
+
+    public JLabel getEmailLabel() {
+        return emailLabel;
+    }
+
+    public void setEmailLabel(JLabel emailLabel) {
+        this.emailLabel = emailLabel;
+    }
+
+    public JTextField getEmailField() {
+        return emailField;
+    }
+
+    public void setEmailField(JTextField emailField) {
+        this.emailField = emailField;
+    }
+
+    public JPasswordField getPasswordField() {
+        return passwordField;
+    }
+
+    public void setPasswordField(JPasswordField passwordField) {
+        this.passwordField = passwordField;
+    }
+
+    public JButton getLoginButton() {
+        return loginButton;
+    }
+
+    public void setLoginButton(JButton loginButton) {
+        this.loginButton = loginButton;
+    }
+
+    public JButton getCreateAccountButton() {
+        return createAccountButton;
+    }
+
+    public void setCreateAccountButton(JButton createAccountButton) {
+        this.createAccountButton = createAccountButton;
+    }
+
+    public JButton getCreateAccountConfirmButton() {
+        return createAccountConfirmButton;
+    }
+
+    public void setCreateAccountConfirmButton(JButton createAccountConfirmButton) {
+        this.createAccountConfirmButton = createAccountConfirmButton;
+    }
 }
