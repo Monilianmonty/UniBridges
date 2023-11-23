@@ -25,6 +25,8 @@ and
 
 in pom.xml file
  */
+
+/*
 package com.Uni.View;
 
 import javafx.application.Application;
@@ -157,4 +159,5 @@ public class CourseChat2 extends Application {
         launch(args);
     }
 }
+*/
 

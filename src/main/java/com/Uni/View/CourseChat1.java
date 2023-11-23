@@ -18,14 +18,16 @@ public class CourseChat1 extends JFrame {
     public CourseChat1() {
         setTitle("Course Chat");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 400);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 100));
 
-        usernameTB = new JTextField("Username", 10);
+
+
+        usernameTB = new JTextField("", 10);
         studentTB = new JTextField(30);
         studentTB.addActionListener(e -> sendMessage());
 
@@ -38,6 +40,8 @@ public class CourseChat1 extends JFrame {
 
         chatArea = new JTextArea();
         chatArea.setEditable(false);
+        chatArea.setBorder(BorderFactory.createEmptyBorder(10,200,10,200));
+        chatArea.setBackground(Color.LIGHT_GRAY);
         JScrollPane scrollPane = new JScrollPane(chatArea);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -66,13 +70,18 @@ public class CourseChat1 extends JFrame {
         String message = studentTB.getText().trim();
         if (!message.isEmpty()) {
             addMessageToChatArea(username, message);
-            saveMessage(username, message);
+            //saveMessage(username, message);
             studentTB.setText(""); // Clear the text field after sending
+
+
         }
     }
 
     private void addMessageToChatArea(String username, String message) {
         chatArea.append(username + ": " + message + "\n");
+
+        chatArea.revalidate();
+        chatArea.repaint();
     }
 
     private void saveMessage(String username, String message) {
