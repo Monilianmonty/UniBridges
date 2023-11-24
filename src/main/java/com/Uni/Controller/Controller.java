@@ -1,15 +1,33 @@
 package com.Uni.Controller;
 
 import com.Uni.Model.Database.DatabaseStruct;
+import com.Uni.Model.Entity.Course;
+import com.Uni.Model.Entity.Student;
 import com.Uni.View.*;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Controller extends Component {
+
+
+    private Student currentStudent;
+
+
+    //sets the current student
+    public void setCurrentStudent(Student student) {
+        this.currentStudent = student;
+    }
+    //gets the current student
+    public Student getCurrentStudent() {
+        return currentStudent;
+    }
+
 
     public Login_View Lview;
 
@@ -18,23 +36,117 @@ public class Controller extends Component {
 
     public CourseView_M Cview;
 
-    public Controller(Login_View v1, CreateUser_View v2, CourseView_M v3/*, Hub v2*/) {
+    public CourseChat1_M CCview;
+
+
+
+
+    public Controller(Login_View v1, CreateUser_View v2, CourseView_M v3, CourseChat1_M v4 /*, Hub v2*/) {
 
         Lview = v1;
         Uview = v2;
        //Hview = v2;
         Cview = v3;
+        CCview = v4;
+
+    }
+
+    public Controller(){
+
     }
 
 
+    //in order to use different the same view within different methods
+    private CourseChat1_M courseChatView;
+
+
+    public void setCourseChat(CourseChat1_M courseChatView){
+        this.courseChatView = courseChatView;
+    }
+
+    public CourseChat1_M getCourseChatView(){
+        return this.courseChatView;
+    }
+
+
+    private CourseView_M courseview;
+
+    public void setCourseView(CourseView_M courseView){
+        this.courseview = courseView;
+    }
+
+    public CourseView_M getCourseView(){
+        return this.courseview;
+    }
+
+
+
+
+
     //has all button methods
-    public void initController() {
+    public void initController() throws SQLException {
         Lview.getLoginButton().addActionListener(e -> login());
         Lview.getCreateAccountButton().addActionListener(e -> createUserView());
         Uview.getCreateAccountButtonU().addActionListener(e -> createAccount());
 
+        String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
+        String user = "admin";
+        String pass = "staples123";
+
+        Connection connection = null;
+
+        connection = DriverManager.getConnection(url, user, pass);
+        CCview.setConnection(connection);
+
+
+
+
+
+
+
+
 
     }
+
+
+
+    public void sendMessage(){
+
+        String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
+        String user = "admin";
+        String pass = "staples123";
+
+
+        Connection connection = null;
+
+        try {
+
+
+
+
+                String message = courseChatView.getStudentTB().getText();
+
+
+
+            //connect to data
+            connection = DriverManager.getConnection(url, user, pass);
+
+            int studentID = 2;
+            int courseID = DatabaseStruct.getCourseIdByName(connection, "Computer Architecture");
+            //send message to database
+            DatabaseStruct.saveMessage(connection, studentID,courseID,message);
+
+            //send the user to the hub with all the respective courses that they are taking
+
+
+
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+
+
+    }
+
 
 
     public void login() {
@@ -68,6 +180,34 @@ public class Controller extends Component {
             System.out.println("Connected to database");
             if(com.Uni.Model.Database.DatabaseStruct.checkCredentials(connection,email,password)){
                 System.out.println("Found in the database!");
+                currentStudent = new Student(DatabaseStruct.getStudentIdByEmail(connection,email), email);
+                setCurrentStudent(currentStudent);
+
+
+
+                int courseId = DatabaseStruct.getCourseIdByName(connection, "Computer Architecture");
+
+                //testing courseID: value passed
+                //System.out.println(courseId);
+
+
+
+                //create instance of ccview to pass current student
+                CourseChat1_M courseChatView = new CourseChat1_M(this, currentStudent, courseId);
+
+                courseChatView.setUsernameTB(email);
+
+                //go to chat log for testing purposes
+                Lview.dispose();
+
+                //set the coursechat to what it is currently
+                setCourseChat(courseChatView);
+                courseChatView.setVisible(true);
+                courseChatView.getSendMessageButton().addActionListener(e -> sendMessage());
+
+
+                //courseChatView.setVisible(true);
+
 
 
                 //JOptionPane.showMessageDialog(this, "Email: " + email + "\nPassword: " + password);
@@ -148,7 +288,20 @@ public class Controller extends Component {
                 com.Uni.Model.Database.DatabaseStruct.insertStudentData(connection, email, password);
 
                 //send them to the courseView
+                currentStudent = new Student(DatabaseStruct.getStudentIdByEmail(connection,email), email);
+                setCurrentStudent(currentStudent);
 
+                //create instance of courseview with current student that signed up and set the current view
+                CourseView_M courseview = new CourseView_M(this, currentStudent);
+                setCourseView(courseview);
+                courseview.setVisible(true);
+                courseview.getAddCourse().addActionListener(e -> {
+                    try {
+                        addCourse();
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
 
 
             }
@@ -160,6 +313,58 @@ public class Controller extends Component {
         //JOptionPane.showMessageDialog(this, "Account Created!\nEmail: " + email + "\nPassword: " + password);
 
     }
+
+
+    public void addCourse() throws SQLException {
+
+        //connect to data
+        String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
+        String user = "admin";
+        String pass = "staples123";
+
+        Connection connection = null;
+        //connect user to database
+        connection = DriverManager.getConnection(url, user, pass);
+        System.out.println("Connected to database");
+
+        // Retrieve selected course and level from CourseView_M
+        String selectedCourseAndLevel = courseview.getSelectedCourseAndLevel();
+        String selectedCourse = (String) courseview.getCourseBox().getSelectedItem();
+        Integer selectedLevel = (Integer) courseview.getLevelBox().getSelectedItem();
+
+        // if a course is selected
+        if (selectedCourseAndLevel != null) {
+            // Append the selected course and level to the JTextArea in CourseView_M
+            courseview.getCourseTextArea().append(selectedCourseAndLevel + "\n");
+
+            //create course object to pass values to append course
+            Course c1 = new Course(selectedCourse,selectedLevel, DatabaseStruct.getCourseIdByName(connection,selectedCourse));
+
+            //append course to list of courses
+            List <Course> courses = courseview.appendCourse(c1);
+
+            Course firstCourse = courses.get(0);
+
+            //checking to see if list contains courses at proper index: values are showing properly
+            System.out.println(firstCourse.getCourseName());
+            System.out.println(courses.get(2));
+
+
+        }
+
+
+        //make it so that when they press finish the list of courses is appended to that specific student
+        courseview.getFinishB().addActionListener(e -> Finish());
+
+    }
+
+    public void Finish(){
+
+
+        System.out.println(courseview.getCourse());
+
+    }
+
 
 
 }

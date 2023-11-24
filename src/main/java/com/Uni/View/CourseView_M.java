@@ -1,5 +1,6 @@
 package com.Uni.View;
 
+import com.Uni.Controller.Controller;
 import com.Uni.Model.Database.DatabaseStruct;
 import com.Uni.Model.Entity.Course;
 import com.Uni.Model.Entity.Student;
@@ -7,6 +8,7 @@ import com.Uni.Model.Entity.Student;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,9 +23,31 @@ public class CourseView_M  extends JFrame implements ActionListener {
     private JButton FinishB;
     private JButton addCourse;
     private List<Course> courses;
-    private Student student;
+    private Student currentStudent;
+
+    private Course course;
+
+    private Controller controller;
+
+    private JTextArea courseTextArea;
+
+
+    public CourseView_M(Controller controller, Student currentStudent){
+        this.controller = controller;
+        this.currentStudent = currentStudent;
+
+
+        initComp();
+        populateComboBoxes();
+
+
+    }
 
     public CourseView_M(){
+
+    }
+
+    public void initComp(){
 
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,7 +108,13 @@ public class CourseView_M  extends JFrame implements ActionListener {
         MajorTF.setBounds(300, 75, 100, 30);
         add(MajorTF);
 
-        populateComboBoxes();
+        // Add this code in the initComp method
+        courseTextArea = new JTextArea();
+        courseTextArea.setBounds(100, 190, 300, 100);
+        add(courseTextArea);
+
+
+
 
         setVisible(true);
 
@@ -99,9 +129,23 @@ public class CourseView_M  extends JFrame implements ActionListener {
     }
 
     // Method to set a list of courses when they press finish
+    public List<Course> appendCourse(Course course) {
+        if (courses == null) {
+            courses = new ArrayList<>(); // Initialize the list if it's null
+        }
+        courses.add(course);
+
+        return courses; // Return the updated list
+    }
+
+    // Method to set a list of courses when they press finish
     public void setCourses(List<Course> courses) {
         this.courses = courses;
         // You can perform additional actions if needed after setting the courses
+    }
+
+    public Course getCourse(){
+        return this.course;
     }
 
     private void populateComboBoxes() {
@@ -114,29 +158,128 @@ public class CourseView_M  extends JFrame implements ActionListener {
         // Clear existing items
         CourseBox.removeAllItems();
         LevelBox.removeAllItems();
-
+        int n = 100;
         // Populate combo boxes with course names and levels
         for (Course course : courses) {
             CourseBox.addItem(course.getCourseName());
-            LevelBox.addItem(course.getLevel());
+
+
+
+            LevelBox.addItem(n);
+            n += 100;
+            if(n >=400) {
+                LevelBox.addItem(null);
+            }
+
         }
     }
 
 
+    public String getSelectedCourseAndLevel() {
+        String selectedCourse = (String) CourseBox.getSelectedItem();
+        System.out.println(selectedCourse);
+        Integer selectedLevel = (Integer) LevelBox.getSelectedItem();
 
+        System.out.println(selectedLevel);
+        if (selectedCourse != null && selectedLevel != null) {
+            return selectedCourse + " - Level " + selectedLevel;
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if(e.getSource()==FinishB)
-        {
-
-            //this.student.setMajor(MajorTF.getText());
-            //this.student.addCourse(CourseBox.getSelectedItem(), LevelBox.getSelectedItem() );
 
 
-            //add course to student object
-        }
+    }
 
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public void setFrame(JFrame frame) {
+        this.frame = frame;
+    }
+
+    public JComboBox<String> getCourseBox() {
+        return CourseBox;
+    }
+
+    public void setCourseBox(JComboBox<String> courseBox) {
+        CourseBox = courseBox;
+    }
+
+    public JComboBox<Integer> getLevelBox() {
+        return LevelBox;
+    }
+
+    public void setLevelBox(JComboBox<Integer> levelBox) {
+        LevelBox = levelBox;
+    }
+
+    public JLabel getCourse_page() {
+        return Course_page;
+    }
+
+    public void setCourse_page(JLabel course_page) {
+        Course_page = course_page;
+    }
+
+    public JLabel getMajor() {
+        return Major;
+    }
+
+    public void setMajor(JLabel major) {
+        Major = major;
+    }
+
+    public JTextField getMajorTF() {
+        return MajorTF;
+    }
+
+    public void setMajorTF(JTextField majorTF) {
+        MajorTF = majorTF;
+    }
+
+    public JButton getFinishB() {
+        return FinishB;
+    }
+
+    public void setFinishB(JButton finishB) {
+        FinishB = finishB;
+    }
+
+    public JButton getAddCourse() {
+        return addCourse;
+    }
+
+    public void setAddCourse(JButton addCourse) {
+        this.addCourse = addCourse;
+    }
+
+    public Student getCurrentStudent() {
+        return currentStudent;
+    }
+
+    public void setCurrentStudent(Student currentStudent) {
+        this.currentStudent = currentStudent;
+    }
+
+    public Controller getController() {
+        return controller;
+    }
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
+    public JTextArea getCourseTextArea() {
+        return courseTextArea;
+    }
+
+    public void setCourseTextArea(JTextArea courseTextArea) {
+        this.courseTextArea = courseTextArea;
     }
 }
