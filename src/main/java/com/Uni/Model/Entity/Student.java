@@ -9,10 +9,17 @@ import java.util.ArrayList;
 public class Student{
     private String name;
     private String email;
+
+    private int studentid;
     private String college;
     private String major;
     private String password;
     private ArrayList<Course> courseList = new ArrayList<>();
+
+    public Student(int studentid, String email) {
+        this.studentid = studentid;
+        this.email = email;
+    }
 
 
 
