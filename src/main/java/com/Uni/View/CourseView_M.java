@@ -47,6 +47,7 @@ public class CourseView_M  extends JFrame implements ActionListener {
 
     }
 
+
     public void initComp(){
 
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);

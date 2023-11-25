@@ -79,6 +79,16 @@ public class Controller extends Component {
         return this.courseview;
     }
 
+    List <Course> coursesF;
+
+    public void setCoursesList(List<Course> courses){
+        this.coursesF = courses;
+    }
+
+    public List<Course> getCourses(){
+        return coursesF;
+    }
+
 
 
 
@@ -314,7 +324,7 @@ public class Controller extends Component {
 
     }
 
-
+    //for add course button
     public void addCourse() throws SQLException {
 
         //connect to data
@@ -343,6 +353,8 @@ public class Controller extends Component {
             //append course to list of courses
             List <Course> courses = courseview.appendCourse(c1);
 
+
+
             Course firstCourse = courses.get(0);
 
             //checking to see if list contains courses at proper index: values are showing properly
@@ -352,16 +364,55 @@ public class Controller extends Component {
 
         }
 
+        //will set the list of courses within controller
+        setCoursesList(coursesF);
+
+
 
         //make it so that when they press finish the list of courses is appended to that specific student
-        courseview.getFinishB().addActionListener(e -> Finish());
+        courseview.getFinishB().addActionListener(e -> {
+            try {
+                Finish();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
     }
 
-    public void Finish(){
+    public void Finish() throws SQLException {
+
+        //create other instance of courseview to pass List values
+        CourseView_M c2 = courseview.getController().getCourseView();
+
+        //will set the list of courses within the view
+        List<Course> courses = c2.getCourses();
+
+        System.out.println("these are the courses"+ courses);
+
+        //connect to data
+        String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
+        String user = "admin";
+        String pass = "staples123";
+
+        Connection connection = null;
+        //connect user to database
+        connection = DriverManager.getConnection(url, user, pass);
+        System.out.println("Connected to database");
+
+        //creating an instance of a student
+        Student s1 = courseview.getCurrentStudent();
 
 
-        System.out.println(courseview.getCourse());
+        //get email of current student
+        String email = s1.getEmail();
+
+        //testing if current users email is passed through: value is passed through
+        //System.out.println("This is the email within the coursechat view " + email);
+
+
+        //enroll student in list of courses *KEYNOTE: Cannot put student in same named course all names must be different
+        DatabaseStruct.enrollStudentInCourses(connection,DatabaseStruct.getStudentIdByEmail(connection,email),courses);
 
     }
 
