@@ -11,6 +11,7 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Controller extends Component {
@@ -32,7 +33,7 @@ public class Controller extends Component {
     public Login_View Lview;
 
     public CreateUser_View Uview;
-    public Hub Hview;
+    public Hub_M Hview;
 
     public CourseView_M Cview;
 
@@ -41,19 +42,31 @@ public class Controller extends Component {
 
 
 
-    public Controller(Login_View v1, CreateUser_View v2, CourseView_M v3, CourseChat1_M v4 /*, Hub v2*/) {
+    public Controller(Login_View v1, CreateUser_View v2, CourseView_M v3, CourseChat1_M v4 , Hub_M v5) {
 
         Lview = v1;
         Uview = v2;
-       //Hview = v2;
         Cview = v3;
         CCview = v4;
-
+        Hview =  v5;
     }
 
     public Controller(){
 
     }
+
+    //for user to navigate back to hub from coursechat
+    private Hub_M hubview;
+
+
+    public void setHubview(Hub_M hubview) {
+        this.hubview = hubview;
+    }
+
+    public Hub_M getHubview(){
+        return this.hubview;
+    }
+
 
 
     //in order to use different the same view within different methods
@@ -96,7 +109,6 @@ public class Controller extends Component {
     //has all button methods
     public void initController() throws SQLException {
         Lview.getLoginButton().addActionListener(e -> login());
-        Lview.getCreateAccountButton().addActionListener(e -> createUserView());
         Uview.getCreateAccountButtonU().addActionListener(e -> createAccount());
 
         String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
@@ -188,14 +200,14 @@ public class Controller extends Component {
             //connect to data
             connection = DriverManager.getConnection(url, user, pass);
             System.out.println("Connected to database");
-            if(com.Uni.Model.Database.DatabaseStruct.checkCredentials(connection,email,password)){
+            if(DatabaseStruct.checkCredentials(connection,email,password)){
                 System.out.println("Found in the database!");
                 currentStudent = new Student(DatabaseStruct.getStudentIdByEmail(connection,email), email);
                 setCurrentStudent(currentStudent);
 
 
 
-                int courseId = DatabaseStruct.getCourseIdByName(connection, "Computer Architecture");
+                //int courseId = DatabaseStruct.getCourseIdByName(connection, "Computer Architecture");
 
                 //testing courseID: value passed
                 //System.out.println(courseId);
@@ -203,24 +215,47 @@ public class Controller extends Component {
 
 
                 //create instance of ccview to pass current student
-                CourseChat1_M courseChatView = new CourseChat1_M(this, currentStudent, courseId);
+                //CourseChat1_M courseChatView = new CourseChat1_M(this, currentStudent, courseId);
 
-                courseChatView.setUsernameTB(email);
 
-                //go to chat log for testing purposes
-                Lview.dispose();
+
+                //must get id from database
+                int sid = DatabaseStruct.getStudentIdByEmail(connection, email);
+
+                //getting courses
+                List<Course> courses = DatabaseStruct.getClassesForStudent(connection, sid);
+
+                //testing local student email: value passed
+                //System.out.println("this is email!"+ currentStudent.getEmail());
+
+                //create instance of hView to pass current student
+                Hub_M hubview = new Hub_M(this, currentStudent, courses);
+                setHubview(hubview);
+                hubview.setUsernameTB(email);
+
+
+                // Capture the current hubview in a final variable
+                final Hub_M currentHubView = hubview;
+
+                // Add action listener with the captured hubview
+                currentHubView.getCourseButton().addActionListener(e -> openHub(currentHubView));
+
+
+                //hubview.getCourseButton().addActionListener(e -> openHub());
+
 
                 //set the coursechat to what it is currently
+                /*
                 setCourseChat(courseChatView);
                 courseChatView.setVisible(true);
                 courseChatView.getSendMessageButton().addActionListener(e -> sendMessage());
+                */
 
 
-                //courseChatView.setVisible(true);
 
 
 
-                //JOptionPane.showMessageDialog(this, "Email: " + email + "\nPassword: " + password);
+
             } else{
                 System.out.println("Not found in database");
             }
@@ -236,15 +271,16 @@ public class Controller extends Component {
 
     }
 
-    //shows the createuser view
-    public void createUserView(){
 
+    public void openHub(Hub_M hubview){
 
-
-
+        //make hub pop up
         Lview.dispose();
-        Uview.setVisible(true);
+        hubview.setVisible(true);
+        System.out.println("eurika!");
+
     }
+
 
     public void createAccount(){
 

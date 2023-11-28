@@ -11,12 +11,12 @@ public class Main {
     public static void main(String args[]) throws SQLException {
         Login_View logView = new Login_View();
         CreateUser_View userView = new CreateUser_View();
-        //Hub hubView = new Hub();
+        Hub_M hubView = new Hub_M();
         CourseView_M courseView = new CourseView_M();
         CourseChat1_M CCview = new CourseChat1_M();
 
         //Monty's controller
-        Controller controller = new Controller(logView, userView, courseView, CCview);
+        Controller controller = new Controller(logView, userView, courseView, CCview,hubView);
 
         controller.CCview = CCview;
         //Joe's controller
