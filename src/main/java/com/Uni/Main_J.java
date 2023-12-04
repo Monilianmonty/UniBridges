@@ -1,10 +1,7 @@
 package com.Uni;
 
-import com.Uni.Controller.Controller;
-import com.Uni.Controller.Controller_J;
+import com.Uni.Unibridges.Controller.Controller_J;
 import com.Uni.View.CourseView;
-import com.Uni.View.CreateUser_View;
-import com.Uni.View.Login_View;
 
 public class Main_J
 {

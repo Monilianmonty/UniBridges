@@ -41,7 +41,10 @@ public class Hub extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==exitB)
         {
-            //return to login
+            this.dispose();
+
+            Login_View login_view = new Login_View();
+            login_view.setVisible(true);
         }
 
         else {
@@ -49,7 +52,9 @@ public class Hub extends JFrame implements ActionListener {
             {
                 if(e.getSource()==course[i])
                 {
-                    //send user to chat room
+                    this.dispose();
+                    CourseChat1 courseChat1 = new CourseChat1();
+                    courseChat1.setVisible(true);
                 }
             }
         }
