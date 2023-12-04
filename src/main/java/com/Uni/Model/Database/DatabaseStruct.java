@@ -2,6 +2,7 @@
 package com.Uni.Model.Database;
 
 import com.Uni.Model.Entity.Course;
+import com.Uni.Model.Entity.Message;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -58,14 +59,19 @@ public class DatabaseStruct{
 
                 //createStudentCoursesTable(connection);
 
-                String name = "Operating Systems";
-                int level = 400;
+                //String name = "Physics";
+                //int level = 200;
 
-                insertClass(connection,name, level );
+                //insertClass(connection,name, level );
 
+                //creating course_history table
+                //createChatLogTable(connection);
 
+                //int studentid = 2;
 
+                //String message = "another day another victory for the og's";
 
+                //saveMessage(connection, studentid, message);
 
             } catch(SQLException e){
                 e.printStackTrace();
@@ -73,22 +79,6 @@ public class DatabaseStruct{
 
 
 
-        /*
-        //create a student class table to establish many-to-many relationship
-        //try (Connection connection = DriverManager.getConnection(url, user, password);
-             Statement statement = connection.createStatement()) {
-            String createStudentCourseTableSQL = "CREATE TABLE IF NOT EXISTS studentcourses ("
-                    + "StudentID INT,"
-                    + "ClassID INT,"
-                    + "FOREIGN KEY (StudentID) REFERENCES Students(StudentID),"
-                    + "FOREIGN KEY (ClassID) REFERENCES Classes(ClassID) )";
-            statement.executeUpdate(createStudentCourseTableSQL);
-            System.out.println("Table 'courses' created (or already exists).");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        */
 
 
     }
@@ -122,6 +112,29 @@ public class DatabaseStruct{
             e.printStackTrace();
         }
     }
+
+    //gets courseID by name
+    public static int getCourseIdByName(Connection connection, String courseName) {
+        try {
+            String sql = "SELECT ClassID FROM courses WHERE name = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, courseName);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt("ClassID");
+            } else {
+                // Return a value indicating that the course with the given name was not found
+                return -1;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Return a value indicating an error
+            return -1;
+        }
+    }
+
 
     //method to create a test student
     public static void insertStudentData(Connection connection, String email, String password) {
@@ -228,6 +241,9 @@ public class DatabaseStruct{
         }
     }
 
+
+
+
     // Retrieve the student ID based on the email
     public static int getStudentIdByEmail(Connection connection, String email) {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT StudentID FROM students WHERE email = ?")) {
@@ -247,6 +263,26 @@ public class DatabaseStruct{
             return -1;
         }
     }
+
+    public static String getStudentEmailByID(Connection connection, int studentID) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT email FROM students WHERE studentID = ?")) {
+            preparedStatement.setInt(1, studentID);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString("StudentID");
+            } else {
+                // Return a value indicating that the student with the given studentid was not found
+                return "student id not found";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Return a value indicating an error
+            return "Error";
+        }
+    }
+
 
     // Delete a student by ID from the "students" table
     public static void deleteStudentById(Connection connection, int studentId) {
@@ -371,6 +407,75 @@ public class DatabaseStruct{
 
         return courses;
     }
+
+    //creates the coursechat table where we reference the studentid and course id since the student writes the chats and the chat logs are based on the course that the student is taking
+    public static void createChatLogTable(Connection connection) {
+        try (Statement statement = connection.createStatement()) {
+            String createChatTableSQL = "CREATE TABLE chat_log (\n" +
+                    "    id INT AUTO_INCREMENT PRIMARY KEY,\n" +
+                    "    student_id INT,\n" +
+                    "    course_id INT,\n" +  // Add course_id column
+                    "    message TEXT,\n" +
+                    "    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n" +
+                    "    FOREIGN KEY (student_id) REFERENCES students(StudentID),\n" +  //chat has many students
+                    "    FOREIGN KEY (course_id) REFERENCES courses(ClassID)\n" +       //chat is based on a single course
+                    ");";
+            statement.executeUpdate(createChatTableSQL);
+            System.out.println("Table 'chat_log' created (or already exists).");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //loads chat history for a specific course
+    public static List<Message> loadChatLogForCourse(Connection connection, int courseId) {
+        List<Message> messages = new ArrayList<>();
+
+        try {
+            String sql = "SELECT chat_log.id, chat_log.message, chat_log.timestamp, students.email " +
+                    "FROM chat_log " +
+                    "JOIN students ON chat_log.student_id = students.StudentID " +
+                    "WHERE chat_log.course_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, courseId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int messageId = resultSet.getInt("id");
+                String messageText = resultSet.getString("message");
+                Timestamp timestamp = resultSet.getTimestamp("timestamp");
+                String email = resultSet.getString("email");
+
+                Message message = new Message(messageId, email, messageText, timestamp);
+                messages.add(message);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return messages;
+    }
+
+
+    //for when a user hits send
+    public static void saveMessage(Connection connection, int studentId, int courseId, String message) {
+        try {
+            String sql = "INSERT INTO chat_log (student_id, course_id, message) VALUES (?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, studentId);
+            statement.setInt(2, courseId);
+            statement.setString(3, message);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 
 

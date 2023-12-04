@@ -4,21 +4,25 @@ import com.Uni.Controller.Controller;
 import com.Uni.Controller.Controller_J;
 import com.Uni.View.*;
 
+import java.sql.SQLException;
+
 public class Main {
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws SQLException {
         Login_View logView = new Login_View();
         CreateUser_View userView = new CreateUser_View();
         //Hub hubView = new Hub();
         CourseView_M courseView = new CourseView_M();
+        CourseChat1_M CCview = new CourseChat1_M();
 
         //Monty's controller
-        Controller Controller = new Controller(logView, userView, courseView);
+        Controller controller = new Controller(logView, userView, courseView, CCview);
 
+        controller.CCview = CCview;
         //Joe's controller
         //Controller_J Controller = new Controller_J(logView, userView);
 
-        Controller.initController();
+        controller.initController();
 
     }
 
