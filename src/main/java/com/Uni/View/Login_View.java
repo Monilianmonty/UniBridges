@@ -58,7 +58,7 @@ public class Login_View extends JFrame implements ActionListener {
         // Creates "Login" button
         loginButton = new JButton("Login");
         loginButton.setBounds(100, 150, 100, 30);
-        //loginButton.addActionListener(this);
+        loginButton.addActionListener(e -> login());
         add(loginButton);
 
         // Creates "Create Account" button
@@ -83,7 +83,14 @@ public class Login_View extends JFrame implements ActionListener {
 
     }
 
+    private void login()
+    {
+        this.dispose();
 
+        Hub hub = new Hub(); // Create an instance of the previous frame/window
+        hub.setVisible(true);
+
+    }
 
 
     public JLabel getLoginLabel() {
