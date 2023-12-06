@@ -25,23 +25,29 @@ public class CourseChat1 extends JFrame {
         topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 100));
 
+        String fetchedUsername = fetchUsernameFromDB();
 
-
-        usernameTB = new JTextField("", 10);
+        usernameTB = new JTextField(fetchedUsername, 10);
+        usernameTB.setEditable(false);
         studentTB = new JTextField(30);
         studentTB.addActionListener(e -> sendMessage());
 
         JButton sendMessageButton = new JButton("Send Message");
         sendMessageButton.addActionListener(e -> sendMessage());
 
+        JButton ExitButton = new JButton("  Exit Chat  ");
+        ExitButton.addActionListener(e -> ExitChat());
+
         topPanel.add(usernameTB);
         topPanel.add(studentTB);
         topPanel.add(sendMessageButton);
+        topPanel.add(Box.createRigidArea(new Dimension(1120, 0)));
+        topPanel.add(ExitButton);
 
         chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setBorder(BorderFactory.createEmptyBorder(10,200,10,200));
-        chatArea.setBackground(Color.LIGHT_GRAY);
+       // chatArea.setBackground(Color.LIGHT_GRAY);
         JScrollPane scrollPane = new JScrollPane(chatArea);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -77,6 +83,14 @@ public class CourseChat1 extends JFrame {
         }
     }
 
+    private void ExitChat()
+    {
+        this.dispose();
+
+        Hub hub = new Hub(); // Create an instance of the previous frame/window
+        hub.setVisible(true);
+
+    }
     private void addMessageToChatArea(String username, String message) {
         chatArea.append(username + ": " + message + "\n");
 
@@ -110,7 +124,33 @@ public class CourseChat1 extends JFrame {
             e.printStackTrace();
         }
     }
+    private String fetchUsernameFromDB() {
+        String fetchedUsername = "Username";
 
+        try {
+
+            String jdbcURL = "jdbc:your_database_url_here";
+            String username = "your_username";
+            String password = "your_password";
+            connection = DriverManager.getConnection(jdbcURL, username, password);
+
+            String sql = "SELECT username FROM user_table WHERE user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, 1);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                fetchedUsername = resultSet.getString("username");
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return fetchedUsername;
+    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new CourseChat1());
     }

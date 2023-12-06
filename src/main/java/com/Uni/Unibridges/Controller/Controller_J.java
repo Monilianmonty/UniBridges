@@ -1,4 +1,4 @@
-package com.Uni.Controller;
+package com.Uni.Unibridges.Controller;
 
 import com.Uni.Model.Database.DatabaseStruct;
 import com.Uni.View.CourseView;

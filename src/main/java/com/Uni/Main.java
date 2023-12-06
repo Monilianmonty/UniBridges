@@ -1,7 +1,6 @@
 package com.Uni;
 
-import com.Uni.Controller.Controller;
-import com.Uni.Controller.Controller_J;
+import com.Uni.Unibridges.Controller.Controller;
 import com.Uni.View.*;
 
 import java.sql.SQLException;
