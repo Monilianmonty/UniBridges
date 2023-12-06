@@ -1,6 +1,6 @@
 package com.Uni.View;
 
-import com.Uni.Controller.Controller;
+import com.Uni.Unibridges.Controller.Controller;
 import com.Uni.Model.Database.DatabaseStruct;
 import com.Uni.Model.Entity.Course;
 import com.Uni.Model.Entity.Student;

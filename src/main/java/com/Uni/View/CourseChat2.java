@@ -1,4 +1,4 @@
-//TEST FOR JAVAFX
+/*//TEST FOR JAVAFX
 
 
 /*
@@ -24,11 +24,12 @@ and
 
 
 in pom.xml file
- */
+ *//*
 
 /*
 package com.Uni.View;
-
+*/
+/*
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -45,8 +46,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-public class CourseChat2 extends Application {
+hat2 extends Application {
     private TextArea chatArea;
     private TextField studentTB;
     private TextField usernameTB;
