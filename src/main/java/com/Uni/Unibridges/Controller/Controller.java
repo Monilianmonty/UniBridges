@@ -454,7 +454,7 @@ public class Controller extends Component {
             System.out.println(firstCourse.getCourseName());
             //System.out.println(courses.get(2));
 
-
+            //
         }
 
         //will set the list of courses within controller
