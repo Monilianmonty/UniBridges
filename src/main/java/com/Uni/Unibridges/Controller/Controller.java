@@ -39,6 +39,8 @@ public class Controller extends Component {
 
     public CourseChat1_M CCview;
 
+    private boolean state = true;
+
 
 
 
@@ -102,6 +104,16 @@ public class Controller extends Component {
         return coursesF;
     }
 
+    //set course student clicked on
+    private String clickedCourse;
+
+    public void setClickedCourse(String clickedCourse){
+        this.clickedCourse = clickedCourse;
+    }
+
+    public String getClickedCourse(){
+        return clickedCourse;
+    }
 
 
 
@@ -153,8 +165,13 @@ public class Controller extends Component {
             //connect to data
             connection = DriverManager.getConnection(url, user, pass);
 
-            int studentID = 2;
-            int courseID = DatabaseStruct.getCourseIdByName(connection, "Computer Architecture");
+            int studentID = currentStudent.getStudentid();
+
+            //testing current student id : value passed when message is sent
+            System.out.println(studentID);
+
+
+            int courseID = DatabaseStruct.getCourseIdByName(connection, getClickedCourse());
             //send message to database
             DatabaseStruct.saveMessage(connection, studentID,courseID,message);
 
@@ -202,20 +219,12 @@ public class Controller extends Component {
             System.out.println("Connected to database");
             if(DatabaseStruct.checkCredentials(connection,email,password)){
                 System.out.println("Found in the database!");
-                currentStudent = new Student(DatabaseStruct.getStudentIdByEmail(connection,email), email);
+
+                //set the student locally
+                currentStudent = new Student(DatabaseStruct.getStudentIdByEmail(connection,email), email, password);
                 setCurrentStudent(currentStudent);
 
 
-
-                //int courseId = DatabaseStruct.getCourseIdByName(connection, "Computer Architecture");
-
-                //testing courseID: value passed
-                //System.out.println(courseId);
-
-
-
-                //create instance of ccview to pass current student
-                //CourseChat1_M courseChatView = new CourseChat1_M(this, currentStudent, courseId);
 
 
 
@@ -226,30 +235,40 @@ public class Controller extends Component {
                 List<Course> courses = DatabaseStruct.getClassesForStudent(connection, sid);
 
                 //testing local student email: value passed
-                //System.out.println("this is email!"+ currentStudent.getEmail());
+                System.out.println("this is email!"+ currentStudent.getEmail());
 
                 //create instance of hView to pass current student
                 Hub_M hubview = new Hub_M(this, currentStudent, courses);
                 setHubview(hubview);
-                hubview.setUsernameTB(email);
 
 
-                // Capture the current hubview in a final variable
-                final Hub_M currentHubView = hubview;
+
+                // Capture the current hubview
 
                 // Add action listener with the captured hubview
-                currentHubView.getCourseButton().addActionListener(e -> openHub(currentHubView));
+                hubview.getCourseButton().addActionListener(e -> {
+                    try {
+                        //set the current class that the student clicked on
+                        String courseName = hubview.getCourseButton().getText();
+
+                        //testing if the course name is passed after student clicks on it
+                        System.out.println("this is the course name!!! " + courseName);
+
+                        //set current course student clicked on within controller
+                        setClickedCourse(courseName);
 
 
-                //hubview.getCourseButton().addActionListener(e -> openHub());
+                        //pass current hubview : maybe will delete in future
+                        openCourseChat(hubview);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
 
 
-                //set the coursechat to what it is currently
-                /*
-                setCourseChat(courseChatView);
-                courseChatView.setVisible(true);
-                courseChatView.getSendMessageButton().addActionListener(e -> sendMessage());
-                */
+
+
+
 
 
 
@@ -272,13 +291,51 @@ public class Controller extends Component {
     }
 
 
-    public void openHub(Hub_M hubview){
+    public void openCourseChat(Hub_M hubview) throws SQLException {
 
         //make hub pop up
         Lview.dispose();
-        hubview.setVisible(true);
-        System.out.println("eurika!");
+        getHubview().dispose();
+        //connect to data
+        Connection connection = null;
+        //connection info
+        String url = "jdbc:mysql://unibridges.ctbdc2rlbdxp.us-east-2.rds.amazonaws.com/unibridges";
+        String user = "admin";
+        String pass = "staples123";
 
+        connection = DriverManager.getConnection(url, user, pass);
+        System.out.println("Connected to database");
+        System.out.println("this is the student email " + currentStudent.getEmail()+ "this is student password "+ currentStudent.getPassword());
+        if (DatabaseStruct.checkCredentials(connection, currentStudent.getEmail(), currentStudent.getPassword())) {
+            System.out.println("Found in the database!");
+
+
+            //must get id from database
+            int sid = DatabaseStruct.getStudentIdByEmail(connection, currentStudent.getEmail());
+
+
+            int courseId = DatabaseStruct.getCourseIdByName(connection, getClickedCourse());
+
+            System.out.println(courseId);
+
+
+
+            //create instance of ccview to pass current student
+            CourseChat1_M courseChatView = new CourseChat1_M(this, currentStudent, courseId);
+            setCourseChat(courseChatView);
+            courseChatView.setUsernameTB(currentStudent.getEmail());
+
+
+
+
+
+            //show current course chat
+            courseChatView.setVisible(true);
+
+            courseChatView.getSendMessageButton().addActionListener(e -> sendMessage());
+
+
+        }
     }
 
 
@@ -334,7 +391,7 @@ public class Controller extends Component {
                 com.Uni.Model.Database.DatabaseStruct.insertStudentData(connection, email, password);
 
                 //send them to the courseView
-                currentStudent = new Student(DatabaseStruct.getStudentIdByEmail(connection,email), email);
+                currentStudent = new Student(DatabaseStruct.getStudentIdByEmail(connection,email), email, password);
                 setCurrentStudent(currentStudent);
 
                 //create instance of courseview with current student that signed up and set the current view
@@ -395,7 +452,7 @@ public class Controller extends Component {
 
             //checking to see if list contains courses at proper index: values are showing properly
             System.out.println(firstCourse.getCourseName());
-            System.out.println(courses.get(2));
+            //System.out.println(courses.get(2));
 
 
         }
@@ -450,6 +507,9 @@ public class Controller extends Component {
         //enroll student in list of courses *KEYNOTE: Cannot put student in same named course all names must be different
         DatabaseStruct.enrollStudentInCourses(connection,DatabaseStruct.getStudentIdByEmail(connection,email),courses);
 
+
+        courseview.dispose();
+        Uview.dispose();
     }
 
 

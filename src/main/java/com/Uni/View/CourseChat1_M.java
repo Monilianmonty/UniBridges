@@ -16,6 +16,8 @@ import java.util.List;  // Add this import statement
 public class CourseChat1_M extends JFrame{
 
     private Controller controller;
+
+
     private Student currentStudent;
 
     private int courseID;
@@ -59,6 +61,10 @@ public class CourseChat1_M extends JFrame{
     private JTextArea chatArea;
     private JTextField studentTB;
     private JTextField usernameTB;
+
+    // Create a JPanel to hold the classTB and sendMessageButton
+
+    private JTextField classTB;
     private Connection connection;
 
     public JButton sendMessageButton;
@@ -66,25 +72,33 @@ public class CourseChat1_M extends JFrame{
     public void initChatUI() {
         setTitle("Course Chat");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 400);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
+
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        usernameTB = new JTextField("Username", 10);
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 100));
+
+        usernameTB = new JTextField("", 10);
         studentTB = new JTextField(30);
 
+
         sendMessageButton = new JButton("Send Message");
+        sendMessageButton.addActionListener(e -> sendMessage());
 
         topPanel.add(usernameTB);
         topPanel.add(studentTB);
+
         topPanel.add(sendMessageButton);
+
 
         // Assign the new JTextArea instance to chatArea
         chatArea = new JTextArea();
         chatArea.setEditable(false);
+        chatArea.setBorder(BorderFactory.createEmptyBorder(10,200,10,200));
+        chatArea.setBackground(Color.LIGHT_GRAY);
         JScrollPane scrollPane = new JScrollPane(chatArea);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -96,6 +110,26 @@ public class CourseChat1_M extends JFrame{
 
         setVisible(true);
 
+    }
+
+
+    private void sendMessage() {
+        String username = usernameTB.getText();
+        String message = studentTB.getText().trim();
+        if (!message.isEmpty()) {
+            addMessageToChatArea(username, message);
+            //saveMessage(username, message);
+            studentTB.setText(""); // Clear the text field after sending
+
+
+        }
+    }
+
+    private void addMessageToChatArea(String username, String message) {
+        chatArea.append(username + ": " + message + "\n");
+
+        chatArea.revalidate();
+        chatArea.repaint();
     }
 
     // Handle button clicks

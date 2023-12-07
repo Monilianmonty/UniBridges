@@ -13,12 +13,30 @@ public class Student{
     private int studentid;
     private String college;
     private String major;
+
+    public int getStudentid() {
+        return studentid;
+    }
+
+    public void setStudentid(int studentid) {
+        this.studentid = studentid;
+    }
+
+    public ArrayList<Course> getCourseList() {
+        return courseList;
+    }
+
+    public void setCourseList(ArrayList<Course> courseList) {
+        this.courseList = courseList;
+    }
+
     private String password;
     private ArrayList<Course> courseList = new ArrayList<>();
 
-    public Student(int studentid, String email) {
+    public Student(int studentid, String email, String password) {
         this.studentid = studentid;
         this.email = email;
+        this.password = password;
     }
 
 
