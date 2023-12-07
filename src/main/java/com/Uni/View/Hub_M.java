@@ -81,6 +81,9 @@ public class Hub_M extends JFrame implements ActionListener {
 
     }
 
+
+
+
     //make course buttons based on a list based on current students classes
     public void spawnCoursesH(List<Course> courses){
 
