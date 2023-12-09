@@ -14,12 +14,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Controller extends Component {
+public class Controller extends Component implements MessageHandler {
 
 
     private Student currentStudent;
 
+    private ChatClient chatClient;
 
+    @Override
+    public void handleMessage(String username, String message) {
+        // Handle the incoming message (e.g., display it in the chat UI)
+        CCview.addMessageToChatArea(username, message);
+    }
     //sets the current student
     public void setCurrentStudent(Student student) {
         this.currentStudent = student;
@@ -131,6 +137,9 @@ public class Controller extends Component {
 
         connection = DriverManager.getConnection(url, user, pass);
         CCview.setConnection(connection);
+
+        // Connect to the server
+        //initializeChatClient();
 
 
 
