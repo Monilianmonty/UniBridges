@@ -9,6 +9,7 @@ import com.Uni.Model.Entity.Student;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.List;  // Add this import statement
 
@@ -17,7 +18,7 @@ public class CourseChat1_M extends JFrame{
 
     private Controller controller;
 
-
+    private Timer timer;
     private Student currentStudent;
 
     private int courseID;
@@ -36,8 +37,10 @@ public class CourseChat1_M extends JFrame{
         //load chatUI
         initChatUI();
 
-        //load course chat
+
         loadchatlogforcourse(courseID);
+
+
 
 
     }
@@ -125,7 +128,7 @@ public class CourseChat1_M extends JFrame{
         }
     }
 
-    private void addMessageToChatArea(String username, String message) {
+    public void addMessageToChatArea(String username, String message) {
         chatArea.append(username + ": " + message + "\n");
 
         chatArea.revalidate();
