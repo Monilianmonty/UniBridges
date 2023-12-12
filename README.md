@@ -4,7 +4,7 @@ Implemented Programming Language: Java
 
 Libraries needed: already installed in zip file
 
-Libraries Used: JDBC, JFrame, java.sql, 
+Libraries Used: JDBC, JFrame, java.sql 
 
 
 Steps to run System: 
